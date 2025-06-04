@@ -12,49 +12,45 @@ import { MediaRoom } from "@/components/media-room";
 interface ProfileIdPageProps {
   params: {
     profileId: string;
-    serverId: string;
-  },
+    roomId: string;
+  };
   searchParams: {
     video?: boolean;
-  }
+  };
 }
 
-const ProfileIdPage = async ({
-  params,
-  searchParams,
-}: ProfileIdPageProps) => {
+const ProfileIdPage = async ({ params, searchParams }: ProfileIdPageProps) => {
   const currProfile = await currentProfile();
 
   if (!currProfile) {
     return auth().redirectToSignIn();
   }
 
-
-  const conversation = await getOrCreateConversation(currProfile.id, params.profileId);
-  console.log('convo: ',conversation)
+  const conversation = await getOrCreateConversation(
+    currProfile.id,
+    params.profileId
+  );
+  console.log("convo: ", conversation);
 
   if (!conversation) {
-    return redirect(`/servers/${params.serverId}`);
+    return redirect(`/rooms/${params.roomId}`);
   }
 
   const { profileOne, profileTwo } = conversation;
 
-  const otherProfile = profileOne.id === currProfile.id ? profileTwo : profileOne;
+  const otherProfile =
+    profileOne.id === currProfile.id ? profileTwo : profileOne;
 
-  return ( 
+  return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
       <ChatHeader
         imageUrl={otherProfile.imageUrl}
         name={otherProfile.name}
-        serverId={params.serverId}
+        roomId={params.roomId}
         type="conversation"
       />
       {searchParams.video && (
-        <MediaRoom
-          chatId={conversation.id}
-          video={true}
-          audio={true}
-        />
+        <MediaRoom chatId={conversation.id} video={true} audio={true} />
       )}
       {!searchParams.video && (
         <>
@@ -82,7 +78,7 @@ const ProfileIdPage = async ({
         </>
       )}
     </div>
-   );
-}
- 
+  );
+};
+
 export default ProfileIdPage;

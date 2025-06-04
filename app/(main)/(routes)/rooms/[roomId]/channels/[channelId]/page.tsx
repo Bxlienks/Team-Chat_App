@@ -11,14 +11,12 @@ import { db } from "@/lib/db";
 
 interface ChannelIdPageProps {
   params: {
-    serverId: string;
+    roomId: string;
     channelId: string;
-  }
+  };
 }
 
-const ChannelIdPage = async ({
-  params
-}: ChannelIdPageProps) => {
+const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
   const profile = await currentProfile();
 
   if (!profile) {
@@ -33,30 +31,26 @@ const ChannelIdPage = async ({
 
   const result = await db.channel.findFirst({
     where: {
-      name: 'general',
-      serverId: params.serverId,
+      name: "general",
+      roomId: params.roomId,
     },
   });
-  const channelId= result?.id;
+  const channelId = result?.id;
 
   const member = await db.member.findFirst({
     where: {
-      serverId: params.serverId,
+      roomId: params.roomId,
       profileId: profile.id,
-    }
+    },
   });
 
   if (!channel || !member) {
     redirect("/");
   }
 
-  return ( 
+  return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
-      <ChatHeader
-        name={channel.name}
-        serverId={channel.serverId}
-        type="channel"
-      />
+      <ChatHeader name={channel.name} roomId={channel.roomId} type="channel" />
       {channel.type === ChannelType.TEXT && (
         <>
           <ChatMessages
@@ -68,7 +62,7 @@ const ChannelIdPage = async ({
             socketUrl="/api/socket/messages"
             socketQuery={{
               channelId: channel.id,
-              serverId: channel.serverId,
+              roomId: channel.roomId,
             }}
             paramKey="channelId"
             paramValue={channel.id}
@@ -79,7 +73,7 @@ const ChannelIdPage = async ({
             apiUrl="/api/socket/messages"
             query={{
               channelId: channel.id,
-              serverId: channel.serverId,
+              roomId: channel.roomId,
             }}
           />
         </>
@@ -89,12 +83,12 @@ const ChannelIdPage = async ({
           chatId={channel.id}
           video={true}
           audio={true}
-          serverId={params.serverId}
+          roomId={params.roomId}
           channelId={channelId}
         />
       )}
     </div>
-   );
-}
- 
+  );
+};
+
 export default ChannelIdPage;

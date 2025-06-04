@@ -7,72 +7,79 @@ import { Separator } from "@/components/ui/separator";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 
-import { ServerHeader } from "./server-header";
-import { ServerSearch } from "./server-search";
-import { ServerSection } from "./server-section";
-import { ServerChannel } from "./server-channel";
-import { ServerMember } from "./server-member";
+import { RoomHeader } from "./room-header";
+import { RoomSearch } from "./room-search";
+import { RoomSection } from "./room-section";
+import { RoomChannel } from "./room-channel";
+import { RoomMember } from "./room-member";
 
-interface ServerSidebarProps {
-  serverId: string;
+interface RoomSidebarProps {
+  roomId: string;
 }
 
 const iconMap = {
   [ChannelType.TEXT]: <Hash className="mr-2 h-4 w-4" />,
   [ChannelType.AUDIO]: <Mic className="mr-2 h-4 w-4" />,
-  [ChannelType.VIDEO]: <Video className="mr-2 h-4 w-4" />
+  [ChannelType.VIDEO]: <Video className="mr-2 h-4 w-4" />,
 };
 
 const roleIconMap = {
   [MemberRole.GUEST]: null,
-  [MemberRole.MODERATOR]: <ShieldCheck className="h-4 w-4 mr-2 text-indigo-500" />,
-  [MemberRole.ADMIN]: <ShieldAlert className="h-4 w-4 mr-2 text-rose-500" />
-}
+  [MemberRole.MODERATOR]: (
+    <ShieldCheck className="h-4 w-4 mr-2 text-indigo-500" />
+  ),
+  [MemberRole.ADMIN]: <ShieldAlert className="h-4 w-4 mr-2 text-rose-500" />,
+};
 
-export const ServerSidebar = async ({
-  serverId
-}: ServerSidebarProps) => {
+export const RoomSidebar = async ({ roomId }: RoomSidebarProps) => {
   const profile = await currentProfile();
 
   if (!profile) {
     return redirect("/");
   }
 
-  const server = await db.server.findUnique({
+  const room = await db.room.findUnique({
     where: {
-      id: serverId,
+      id: roomId,
     },
     include: {
       channels: {
-        orderBy: {createdAt: "asc"},
+        orderBy: { createdAt: "asc" },
       },
       members: {
-        include: {profile: true},
-        orderBy: {role: "asc"}
-      }
-    }
+        include: { profile: true },
+        orderBy: { role: "asc" },
+      },
+    },
   });
 
-  const textChannels = server?.channels.filter((channel) => channel.type === ChannelType.TEXT)
-  const audioChannels = server?.channels.filter((channel) => channel.type === ChannelType.AUDIO)
-  const videoChannels = server?.channels.filter((channel) => channel.type === ChannelType.VIDEO)
-  const members = server?.members.filter((member) => member.profileId !== profile.id)
+  const textChannels = room?.channels.filter(
+    (channel) => channel.type === ChannelType.TEXT
+  );
+  const audioChannels = room?.channels.filter(
+    (channel) => channel.type === ChannelType.AUDIO
+  );
+  const videoChannels = room?.channels.filter(
+    (channel) => channel.type === ChannelType.VIDEO
+  );
+  const members = room?.members.filter(
+    (member) => member.profileId !== profile.id
+  );
 
-  if (!server) {
+  if (!room) {
     return redirect("/");
   }
 
-  const role = server.members.find((member) => member.profileId === profile.id)?.role;
+  const role = room.members.find(
+    (member) => member.profileId === profile.id
+  )?.role;
 
   return (
     <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
-      <ServerHeader
-        server={server}
-        role={role}
-      />
+      <RoomHeader room={room} role={role} />
       <ScrollArea className="flex-1 px-3">
         <div className="mt-2">
-          <ServerSearch
+          <RoomSearch
             data={[
               {
                 label: "Text Channels",
@@ -81,7 +88,7 @@ export const ServerSidebar = async ({
                   id: channel.id,
                   name: channel.name,
                   icon: iconMap[channel.type],
-                }))
+                })),
               },
               {
                 label: "Voice Channels",
@@ -90,7 +97,7 @@ export const ServerSidebar = async ({
                   id: channel.id,
                   name: channel.name,
                   icon: iconMap[channel.type],
-                }))
+                })),
               },
               {
                 label: "Video Channels",
@@ -99,7 +106,7 @@ export const ServerSidebar = async ({
                   id: channel.id,
                   name: channel.name,
                   icon: iconMap[channel.type],
-                }))
+                })),
               },
               {
                 label: "Members",
@@ -108,7 +115,7 @@ export const ServerSidebar = async ({
                   id: member.id,
                   name: member.profile.name,
                   icon: roleIconMap[member.role],
-                }))
+                })),
               },
             ]}
           />
@@ -116,7 +123,7 @@ export const ServerSidebar = async ({
         <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2" />
         {!!textChannels?.length && (
           <div className="mb-2">
-            <ServerSection
+            <RoomSection
               sectionType="channels"
               channelType={ChannelType.TEXT}
               role={role}
@@ -124,11 +131,11 @@ export const ServerSidebar = async ({
             />
             <div className="space-y-[2px]">
               {textChannels.map((channel) => (
-                <ServerChannel
+                <RoomChannel
                   key={channel.id}
                   channel={channel}
                   role={role}
-                  server={server}
+                  room={room}
                 />
               ))}
             </div>
@@ -136,7 +143,7 @@ export const ServerSidebar = async ({
         )}
         {!!audioChannels?.length && (
           <div className="mb-2">
-            <ServerSection
+            <RoomSection
               sectionType="channels"
               channelType={ChannelType.AUDIO}
               role={role}
@@ -144,11 +151,11 @@ export const ServerSidebar = async ({
             />
             <div className="space-y-[2px]">
               {audioChannels.map((channel) => (
-                <ServerChannel
+                <RoomChannel
                   key={channel.id}
                   channel={channel}
                   role={role}
-                  server={server}
+                  room={room}
                 />
               ))}
             </div>
@@ -156,7 +163,7 @@ export const ServerSidebar = async ({
         )}
         {!!videoChannels?.length && (
           <div className="mb-2">
-            <ServerSection
+            <RoomSection
               sectionType="channels"
               channelType={ChannelType.VIDEO}
               role={role}
@@ -164,36 +171,33 @@ export const ServerSidebar = async ({
             />
             <div className="space-y-[2px]">
               {videoChannels.map((channel) => (
-                <ServerChannel
+                <RoomChannel
                   key={channel.id}
                   channel={channel}
                   role={role}
-                  server={server}
+                  room={room}
                 />
               ))}
             </div>
           </div>
         )}
+
         {!!members?.length && (
           <div className="mb-2">
-            <ServerSection
+            <RoomSection
               sectionType="members"
               role={role}
               label="Members"
-              server={server}
+              room={room}
             />
             <div className="space-y-[2px]">
               {members.map((member) => (
-                <ServerMember
-                  key={member.id}
-                  member={member}
-                  server={server}
-                />
+                <RoomMember key={member.id} member={member} room={room} />
               ))}
             </div>
           </div>
         )}
       </ScrollArea>
     </div>
-  )
-}
+  );
+};

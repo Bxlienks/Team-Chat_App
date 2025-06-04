@@ -4,49 +4,47 @@ import { redirect } from "next/navigation";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 
-interface ServerIdPageProps {
+interface roomIdPageProps {
   params: {
-    serverId: string;
-  }
-};
+    roomId: string;
+  };
+}
 
-const ServerIdPage = async ({
-  params
-}: ServerIdPageProps) => {
+const roomIdPage = async ({ params }: roomIdPageProps) => {
   const profile = await currentProfile();
 
   if (!profile) {
     return auth().redirectToSignIn();
   }
 
-  const server = await db.server.findUnique({
+  const room = await db.room.findUnique({
     where: {
-      id: params.serverId,
+      id: params.roomId,
       members: {
         some: {
           profileId: profile.id,
-        }
-      }
+        },
+      },
     },
     include: {
       channels: {
         where: {
-          name: "general"
+          name: "general",
         },
         orderBy: {
-          createdAt: "asc"
-        }
-      }
-    }
-  })
+          createdAt: "asc",
+        },
+      },
+    },
+  });
 
-  const initialChannel = server?.channels[0];
+  const initialChannel = room?.channels[0];
 
   if (initialChannel?.name !== "general") {
     return null;
   }
 
-  return redirect(`/servers/${params.serverId}/channels/${initialChannel?.id}`)
-}
- 
-export default ServerIdPage;
+  return redirect(`/rooms/${params.roomId}/channels/${initialChannel?.id}`);
+};
+
+export default roomIdPage;

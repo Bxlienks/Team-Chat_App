@@ -8,11 +8,9 @@ interface InviteCodePageProps {
   params: {
     inviteCode: string;
   };
-};
+}
 
-const InviteCodePage = async ({
-  params
-}: InviteCodePageProps) => {
+const InviteCodePage = async ({ params }: InviteCodePageProps) => {
   const profile = await currentProfile();
 
   if (!profile) {
@@ -23,15 +21,17 @@ const InviteCodePage = async ({
     return redirect("/");
   }
 
-  const existServer = await db.server.findFirst({
+  const existRoom = await db.room.findFirst({
     where: {
       inviteCode: params.inviteCode,
-    }
+    },
   });
-  if (!existServer){
+  if (!existRoom) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">404 - Page Not Found</h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          404 - Page Not Found
+        </h1>
         <p className="text-lg text-gray-600 mb-6">
           Oops! The link you followed is incorrect or the page does not exist.
         </p>
@@ -41,22 +41,22 @@ const InviteCodePage = async ({
       </div>
     );
   }
-  const existingServerWithMember = await db.server.findFirst({
+  const existingRoomWithMember = await db.room.findFirst({
     where: {
       inviteCode: params.inviteCode,
       members: {
         some: {
-          profileId: profile.id
-        }
-      }
-    }
+          profileId: profile.id,
+        },
+      },
+    },
   });
 
-  if (existingServerWithMember) {
-    return redirect(`/servers/${existingServerWithMember.id}`);
+  if (existingRoomWithMember) {
+    return redirect(`/rooms/${existingRoomWithMember.id}`);
   }
 
-  const server = await db.server.update({
+  const room = await db.room.update({
     where: {
       inviteCode: params.inviteCode,
     },
@@ -65,19 +65,21 @@ const InviteCodePage = async ({
         create: [
           {
             profileId: profile.id,
-          }
-        ]
-      }
-    }
+          },
+        ],
+      },
+    },
   });
 
-  if (server) {
-    return redirect(`/servers/${server.id}`);
+  if (room) {
+    return redirect(`/rooms/${room.id}`);
   }
-  
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold text-gray-800 mb-4">404 - Page Not Found</h1>
+      <h1 className="text-4xl font-bold text-gray-800 mb-4">
+        404 - Page Not Found
+      </h1>
       <p className="text-lg text-gray-600 mb-6">
         Oops! The link you followed is incorrect or the page does not exist.
       </p>
@@ -86,6 +88,6 @@ const InviteCodePage = async ({
       </a>
     </div>
   );
-}
- 
+};
+
 export default InviteCodePage;

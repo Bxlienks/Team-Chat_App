@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 
 import { CreateChannelModal } from "@/components/modals/create-channel-modal";
-import { CreateServerModal } from "@/components/modals/create-server-modal";
+import { CreateRoomModal } from "@/components/modals/create-room-modal";
 import { DeleteChannelModal } from "@/components/modals/delete-channel-modal";
 import { DeleteMessageModal } from "@/components/modals/delete-message-modal";
-import { DeleteServerModal } from "@/components/modals/delete-server-modal";
+import { DeleteRoomModal } from "@/components/modals/delete-room-modal";
 import { EditChannelModal } from "@/components/modals/edit-channel-modal";
-import { EditServerModal } from "@/components/modals/edit-server-modal";
+import { EditRoomModal } from "@/components/modals/edit-room-modal";
 import { InviteModal } from "@/components/modals/invite-modal";
-import { LeaveServerModal } from "@/components/modals/leave-server-modal";
+import { LeaveRoomModal } from "@/components/modals/leave-room-modal";
 import { MembersModal } from "@/components/modals/members-modal";
 import { MessageFileModal } from "@/components/modals/message-file-modal";
 
@@ -27,17 +27,17 @@ export const ModalProvider = () => {
 
   return (
     <>
-      <CreateServerModal />
+      <CreateRoomModal />
       <InviteModal />
-      <EditServerModal />
+      <EditRoomModal />
       <MembersModal />
       <CreateChannelModal />
-      <LeaveServerModal />
-      <DeleteServerModal />
+      <LeaveRoomModal />
+      <DeleteRoomModal />
       <DeleteChannelModal />
       <EditChannelModal />
       <MessageFileModal />
       <DeleteMessageModal />
     </>
-  )
-}
+  );
+};

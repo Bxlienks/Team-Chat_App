@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { serverId: string } }
+  { params }: { params: { roomId: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -15,13 +15,13 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.serverId) {
-      return new NextResponse("Server ID Missing", { status: 400 });
+    if (!params.roomId) {
+      return new NextResponse("Room ID Missing", { status: 400 });
     }
 
-    const server = await db.server.update({
+    const room = await db.room.update({
       where: {
-        id: params.serverId,
+        id: params.roomId,
         profileId: profile.id,
       },
       data: {
@@ -29,9 +29,9 @@ export async function PATCH(
       },
     });
 
-    return NextResponse.json(server);
+    return NextResponse.json(room);
   } catch (error) {
-    console.log("[SERVER_ID]", error);
+    console.log("[ROOM_ID]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
