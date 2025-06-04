@@ -1,4 +1,4 @@
-# Web-app comunication: Next.js 15, React, Socket.io, Prisma, Tailwind, ProsgertSQL
+# Web-app comunication: Next.js 14, React, Socket.io, Prisma, Tailwind, ProsgertSQL
 
 ### Install packages
 
@@ -29,7 +29,7 @@ NEXT_PUBLIC_LIVEKIT_URL=
 
 ### Setup Prisma
 
-Add MySQL Database
+Add ProsgertSQL Database
 
 ```shell
 npx prisma generate
