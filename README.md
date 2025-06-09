@@ -1,4 +1,4 @@
-# Web-app comunication: Next.js 14, React, Socket.io, Prisma, Tailwind, ProsgertSQL
+# Team-Chat_app comunication: Next.js 14, React, Socket.io, Prisma, Tailwind, ProsgertSQL
 
 ### Install packages
 
