@@ -68,7 +68,7 @@ export const RoomHeader = ({ room, role }: RoomHeaderProps) => {
             <Users className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
-        {isModerator && (
+        {isAdmin && (
           <DropdownMenuItem
             onClick={() => onOpen("createChannel")}
             className="px-3 py-2 text-sm cursor-pointer"
@@ -77,7 +77,7 @@ export const RoomHeader = ({ room, role }: RoomHeaderProps) => {
             <PlusCircle className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
-        {isModerator && <DropdownMenuSeparator />}
+        { <DropdownMenuSeparator />}
         {isAdmin && (
           <DropdownMenuItem
             onClick={() => onOpen("deleteRoom", { room })}
