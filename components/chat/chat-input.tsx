@@ -78,13 +78,20 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                     }`}
                     {...field}
                   />
-                  <div className="absolute top-7 right-8">
+                  <div className="absolute top-7 right-16">
                     <EmojiPicker
                       onChange={(emoji: string) =>
                         field.onChange(`${field.value} ${emoji}`)
                       }
                     />
                   </div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="absolute top-7 right-8 h-[24px] w-[24px] bg-zinc-500 dark:bg-zinc-400 hover:bg-zinc-600 dark:hover:bg-zinc-300 transition rounded-full p-1 flex items-center justify-center"
+                    >
+                    <Send className="text-white dark:text-[#313338]" />
+                    </button>
                 </div>
               </FormControl>
             </FormItem>
