@@ -29,7 +29,7 @@ export const RoomSection = ({
       <p className="text-xs uppercase font-semibold text-zinc-500 dark:text-zinc-400">
         {label}
       </p>
-      {role !== MemberRole.GUEST && sectionType === "channels" && (
+      {role === MemberRole.ADMIN && sectionType === "channels" && (
         <ActionTooltip label="Create Channel" side="top">
           <button
             onClick={() => onOpen("createChannel", { channelType })}
