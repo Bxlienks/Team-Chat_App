@@ -91,7 +91,7 @@ export async function PATCH(
           some: {
             profileId: profile.id,
             role: {
-              in: [MemberRole.ADMIN],
+              in: [MemberRole.ADMIN, MemberRole.MODERATOR],
             },
           },
         },
